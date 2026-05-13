@@ -1,0 +1,22 @@
+{
+  "appId": "com.pauln17.contextly",
+  "productName": "Contextly",
+  "directories": {
+    "output": "release"
+  },
+  "icon": "public/icon.png",
+  "files": ["dist-electron/**/*", "dist-react/**/*", "package.json"],
+  "win": {
+    "target": ["nsis"]
+  },
+  "mac": {
+    "target": ["dmg"]
+  },
+  "linux": {
+    "target": ["AppImage"],
+    "category": "Utility"
+  },
+  "extraMetadata": {
+    "main": "dist-electron/main.js"
+  }
+}
