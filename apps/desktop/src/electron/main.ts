@@ -1,5 +1,6 @@
 import "dotenv/config";
-import { app, BrowserWindow, Tray } from "electron";
+import { app, BrowserWindow } from "electron";
+import { createTray } from "./tray.js";
 import path from "path";
 
 const dev = process.env.NODE_ENV === "development";
@@ -20,12 +21,34 @@ const createWindow = () => {
   } else {
     void win.loadFile(path.join(app.getAppPath(), "dist-react", "index.html"));
   }
+
+  createTray(win);
+  handleCloseEvents(win);
 };
 
 app.whenReady().then(() => {
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+  createWindow();
+});
+
+const handleCloseEvents = (mainWindow: BrowserWindow) => {
+  let willClose = false;
+
+  mainWindow.on("show", () => {
+    willClose = false;
+  });
+
+  mainWindow.on("close", (e) => {
+    if (willClose) {
+      return;
+    }
+    e.preventDefault();
+    mainWindow.hide();
+    if (app.dock) {
+      app.dock.hide();
     }
   });
-});
+
+  app.on("before-quit", () => {
+    willClose = true;
+  });
+};
